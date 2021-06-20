@@ -4,9 +4,9 @@
   "package": "net.arathain.malazan.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "PlayerEntityMixin"
   ],
   "client": [
-
   ],
   "injectors": {
     "defaultRequire": 1
