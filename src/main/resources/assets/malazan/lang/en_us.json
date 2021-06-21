@@ -1,5 +1,6 @@
 {
   "key.malazan.spell1": "Lesser Spell",
   "key.malazan.spell2": "Greater Spell",
-  "category.malazan.spells": "Spells"
+  "category.malazan.spells": "Spells",
+  "item.malazan.telas_tablet": "Warm Guidance Tablet"
 }

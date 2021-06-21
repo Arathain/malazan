@@ -8,8 +8,9 @@ import org.lwjgl.glfw.GLFW;
 
 public class MalazanClient implements ClientModInitializer {
 
-        public KeyBinding spellbind1;
-        public KeyBinding spellbind2;
+        public static KeyBinding spellbind1;
+        public static KeyBinding spellbind2;
+
 
         @Override
         public void onInitializeClient() {
