@@ -18,7 +18,7 @@ public class ServerPlayerEntityMixin implements Talent {
 
     @Inject(method = "readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"))
     public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        nbt.getInt("telas");
+        telas = nbt.getInt("telas");
     }
 
     @Inject(method = "writeCustomDataToNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"))

@@ -54,7 +54,7 @@ public class MalazanSpells {
                         cursedshit.remove(Entity.RemovalReason.DISCARDED);
                         BlockState blockState = world.getBlockState(blockPos);
                         if (!CampfireBlock.canBeLit(blockState) && !CandleBlock.canBeLit(blockState) && !CandleCakeBlock.canBeLit(blockState)) {
-                            BlockPos blockPos2 = blockPos.offset(hitResult.getSide());
+                            BlockPos blockPos2 = blockPos;
                             if (AbstractFireBlock.canPlaceAt(world, blockPos2, user == null ? Direction.NORTH : user.getHorizontalFacing())) {
                                 world.playSound(user, blockPos2, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
                                 BlockState blockState2 = AbstractFireBlock.getState(world, blockPos2);
