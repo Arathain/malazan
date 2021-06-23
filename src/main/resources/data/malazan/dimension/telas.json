@@ -1,0 +1,32 @@
+{
+  "type": "malazan:telas",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "structures": {
+        "structures": {}
+      },
+      "layers": [
+        {
+        "height": 2,
+        "block": "minecraft:bedrock"
+        },
+        {
+          "height": 8,
+          "block": "minecraft:red_sandstone"
+        },
+        {
+          "height": 5,
+          "block": "minecraft:magma_block"
+        },
+        {
+          "height": 10,
+          "block": "minecraft:red_sand"
+        }
+      ],
+      "biome": "malazan:telas"
+
+      }
+    }
+  }
+

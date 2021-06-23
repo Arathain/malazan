@@ -42,8 +42,8 @@ public class MalazanSpells {
                     BlockHitResult hitResult = MalazanUtil.hitscanBlock(world, user, 30, RaycastContext.FluidHandling.NONE, (target) -> !target.equals(Blocks.AIR));
                     EntityHitResult hit = MalazanUtil.hitscanEntity(world, user, 30, (target) -> target instanceof LivingEntity && !target.isSpectator() && user.canSee(target));
                     if (hit !=null) {
-                        world.setBlockState(hit.getEntity().getBlockPos(), Blocks.FIRE.getDefaultState());
                         (hit).getEntity().setOnFireFor(20);
+                        user.addExhaustion(20);
                     }
                     if (hit == null) {
                         hitResult.getPos();
@@ -54,15 +54,14 @@ public class MalazanSpells {
                         cursedshit.remove(Entity.RemovalReason.DISCARDED);
                         BlockState blockState = world.getBlockState(blockPos);
                         if (!CampfireBlock.canBeLit(blockState) && !CandleBlock.canBeLit(blockState) && !CandleCakeBlock.canBeLit(blockState)) {
-                            BlockPos blockPos2 = blockPos;
-                            if (AbstractFireBlock.canPlaceAt(world, blockPos2, user == null ? Direction.NORTH : user.getHorizontalFacing())) {
-                                world.playSound(user, blockPos2, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
-                                BlockState blockState2 = AbstractFireBlock.getState(world, blockPos2);
-                                world.setBlockState(blockPos2, blockState2, 11);
+                            if (AbstractFireBlock.canPlaceAt(world, blockPos, user == null ? Direction.NORTH : user.getHorizontalFacing())) {
+                                world.playSound(user, blockPos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
+                                BlockState blockState2 = AbstractFireBlock.getState(world, blockPos);
+                                world.setBlockState(blockPos, blockState2, 11);
                                 world.emitGameEvent(user, GameEvent.BLOCK_PLACE, blockPos);
                                 ItemStack itemStack = user.getStackInHand(user.getActiveHand());
                                 if (user instanceof ServerPlayerEntity) {
-                                    Criteria.PLACED_BLOCK.trigger((ServerPlayerEntity)user, blockPos2, itemStack);
+                                    Criteria.PLACED_BLOCK.trigger((ServerPlayerEntity)user, blockPos, itemStack);
                                 }
 
                             }
@@ -72,6 +71,7 @@ public class MalazanSpells {
                             world.emitGameEvent(user, GameEvent.BLOCK_PLACE, blockPos);
 
                             }
+                        user.addExhaustion(20);
                         }
 
                     }

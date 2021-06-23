@@ -1,0 +1,19 @@
+{
+  "name": "telas",
+  "ultrawarm": true,
+  "natural": false,
+  "coordinate_scale": 32.0,
+  "has_skylight": false,
+  "has_ceiling": false,
+  "effects": "minecraft:the_nether",
+  "height": 128,
+  "min_y": 0,
+  "logical_height": 40,
+  "has_raids": false,
+  "bed_works": false,
+  "piglin_safe": true,
+  "respawn_anchor_works": false,
+  "ambient_light": 0.4,
+  "fixed_time": 18000,
+  "infiniburn": "minecraft:infiniburn_nether"
+}
