@@ -1,7 +1,9 @@
 package net.arathain.malazan;
 
+import net.arathain.malazan.common.render.FlareRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
@@ -15,6 +17,8 @@ public class MalazanClient implements ClientModInitializer {
         @Override
         public void onInitializeClient() {
                 this.initKeybinds();
+                EntityRendererRegistry.INSTANCE.register(Malazan.FLARE,
+                        FlareRenderer::new);
         }
 
         private void initKeybinds() {

@@ -6,7 +6,7 @@
   "has_skylight": false,
   "has_ceiling": false,
   "effects": "minecraft:the_nether",
-  "height": 128,
+  "height": 64,
   "min_y": 0,
   "logical_height": 40,
   "has_raids": false,

@@ -1,6 +1,8 @@
 package net.arathain.malazan.common.biome;
 
+import net.arathain.malazan.Malazan;
 import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -26,10 +28,12 @@ public class MalazanBiomes {
         // Vanilla configured features for biomes are defined in DefaultBiomeFeatures.
 
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
+        spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(Malazan.FLARE, 1, 1, 3));
+
 
         GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
         generationSettings.surfaceBuilder(SurfaceBuilder.NETHER.withConfig(SurfaceBuilder.NETHER_CONFIG));
-        generationSettings.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ConfiguredFeatures.PATCH_FIRE);
+        generationSettings.feature(GenerationStep.Feature.SURFACE_STRUCTURES, ConfiguredFeatures.PATCH_FIRE);
         generationSettings.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ConfiguredFeatures.ORE_MAGMA);
 
         return (new Biome.Builder())
