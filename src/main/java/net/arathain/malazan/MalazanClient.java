@@ -1,6 +1,7 @@
 package net.arathain.malazan;
 
 import net.arathain.malazan.common.render.FlareRenderer;
+import net.arathain.malazan.common.render.PortalRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
@@ -19,6 +20,8 @@ public class MalazanClient implements ClientModInitializer {
                 this.initKeybinds();
                 EntityRendererRegistry.INSTANCE.register(Malazan.FLARE,
                         FlareRenderer::new);
+                EntityRendererRegistry.INSTANCE.register(Malazan.PORTAL,
+                        PortalRenderer::new);
         }
 
         private void initKeybinds() {

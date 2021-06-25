@@ -12,15 +12,15 @@
         "block": "minecraft:bedrock"
         },
         {
-          "height": 8,
-          "block": "minecraft:red_sandstone"
-        },
-        {
-          "height": 5,
+          "height": 16,
           "block": "minecraft:magma_block"
         },
         {
-          "height": 10,
+          "height": 32,
+          "block": "minecraft:red_sandstone"
+        },
+        {
+          "height": 8,
           "block": "minecraft:red_sand"
         }
       ],
