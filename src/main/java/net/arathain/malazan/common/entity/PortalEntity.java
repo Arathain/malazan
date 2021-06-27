@@ -43,14 +43,7 @@ public class PortalEntity extends HostileEntity {
     public void tick() {
         super.tick();
         if (!world.isClient()) {
-            for (int i = 0; i < (96); i++) {
-                    this.world.addParticle(ParticleTypes.FLAME,
-                            this.getParticleX(1),
-                            this.getPos().y,
-                            this.getParticleZ(1),
-                            random.nextGaussian() / 16, random.nextGaussian() / 4, random.nextGaussian() / 16);
 
-            }
             BlockPos funnypos = this.getBlockPos();
             this.setOnFireFor(5);
             if (this.getBlockStateAtPos() == Blocks.AIR.getDefaultState()) {
@@ -78,6 +71,15 @@ public class PortalEntity extends HostileEntity {
                 this.remove(RemovalReason.DISCARDED);
             }
 
+        }
+        if (world.isClient()) {
+            for (int i = 0; i < (32); i++) {
+                this.getEntityWorld().addParticle(ParticleTypes.FLAME,
+                        this.getX(),
+                        this.getY(),
+                        this.getZ(),
+                        random.nextGaussian() / 16, random.nextGaussian() / 4, random.nextGaussian() / 16);
+            }
         }
     }
 

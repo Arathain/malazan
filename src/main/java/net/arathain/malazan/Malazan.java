@@ -21,6 +21,7 @@ import net.minecraft.world.biome.Biome;
 public class Malazan implements ModInitializer {
 	public static final String MOD_ID = "malazan";
 	public static final Identifier TELAS_KEYBIND_UNO = new Identifier(MOD_ID, "telas1");
+	public static final Identifier TELAS_KEYBIND_DOS = new Identifier(MOD_ID, "telas2");
 	public static final String WARREN = "Warren";
 	public static final String MALAZAN_DATA = "MalazData";
 	public static final EntityType<FlareEntity> FLARE = createEntity("flare", FlareEntity.createAttributes(), FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, FlareEntity::new).dimensions(EntityDimensions.fixed(0.6f, 1.9f)).fireImmune().build());

@@ -38,13 +38,6 @@ public class FlareEntity extends HostileEntity {
     public void tick() {
         super.tick();
         if (!world.isClient()) {
-            for (int i = 0; i < (16); i++) {
-                this.world.addParticle(ParticleTypes.FLAME,
-                        this.getParticleX(1),
-                        this.getPos().y,
-                        this.getParticleZ(1),
-                        random.nextGaussian() / 16, random.nextGaussian() / 4, random.nextGaussian() / 16);
-            }
             BlockPos funnypos = this.getBlockPos();
             this.setOnFireFor(10);
             this.clearStatusEffects();
@@ -66,9 +59,18 @@ public class FlareEntity extends HostileEntity {
             }
 
         }
+        if (world.isClient()) {
+            for (int i = 0; i < (32); i++) {
+                this.getEntityWorld().addParticle(ParticleTypes.FLAME,
+                        this.getX(),
+                        this.getY(),
+                        this.getZ(),
+                        random.nextGaussian() / 16, random.nextGaussian() / 4, random.nextGaussian() / 16);
+            }
+        }
     }
     public void explode() {
-        world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 3.0f, true, Explosion.DestructionType.DESTROY);
+        world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 3.0f, true, Explosion.DestructionType.NONE);
         Vec3d pos = this.getPos();
         List<LivingEntity> entities = this.getEntityWorld().getEntitiesByClass(
                 LivingEntity.class,

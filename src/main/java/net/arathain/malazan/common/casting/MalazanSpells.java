@@ -10,8 +10,11 @@ import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -44,14 +47,14 @@ public class MalazanSpells {
                     EntityHitResult hit = MalazanUtil.hitscanEntity(world, user, 30, (target) -> target instanceof LivingEntity && !target.isSpectator() && user.canSee(target));
                     if (user.isSneaking()) {
                         if (hit != null) {
-                            user.addExhaustion(40);
+                            user.addExhaustion(8);
                             PortalEntity portal = new PortalEntity(Malazan.PORTAL, world);
                             portal.setPos((float) hit.getPos().x, (float) hit.getPos().y, (float) hit.getPos().z);
                             portal.setOwner(user);
                             world.spawnEntity(portal);
                         }
                         if (hit == null) {
-                            user.addExhaustion(40);
+                            user.addExhaustion(8);
                             PortalEntity portal = new PortalEntity(Malazan.PORTAL, world);
                             portal.setPos((float) hitResult.getPos().x, (float) hitResult.getPos().y, (float) hitResult.getPos().z);
                             portal.setOwner(user);
@@ -61,7 +64,9 @@ public class MalazanSpells {
                     else {
                         if (hit != null) {
                             (hit).getEntity().setOnFireFor(20);
-                            user.addExhaustion(20);
+                            if (!(((Talent) user).getTelas() > 1)) {
+                                user.addExhaustion(1);
+                            }
                         }
                         if (hit == null) {
                             hitResult.getPos();
@@ -89,7 +94,9 @@ public class MalazanSpells {
                                 world.emitGameEvent(user, GameEvent.BLOCK_PLACE, blockPos);
 
                             }
-                            user.addExhaustion(20);
+                            if (!(((Talent) user).getTelas() > 1)) {
+                                user.addExhaustion(1);
+                            }
                         }
 
                     }
@@ -98,6 +105,57 @@ public class MalazanSpells {
 
             });
         //TODO: add greater Telas and retreat to Telas
+        ServerSidePacketRegistry.INSTANCE.register(Malazan.TELAS_KEYBIND_DOS, (packetContext, attachedData) -> {
+            // Get the BlockPos we put earlier in the IO thread
+            BlockPos pos = attachedData.readBlockPos();
+            packetContext.getTaskQueue().execute(() -> {
+                // Execute on the main thread
+                PlayerEntity user = packetContext.getPlayer();
+                World world = user.world;
+                // ALWAYS validate that the information received is valid in a C2S packet!
+                if(world.isChunkLoaded(pos) && ((Talent) user).getTelas() > 1) {
+                    BlockHitResult hitResult = MalazanUtil.hitscanBlock(world, user, 30, RaycastContext.FluidHandling.NONE, (target) -> !target.equals(Blocks.AIR));
+                    EntityHitResult hit = MalazanUtil.hitscanEntity(world, user, 30, (target) -> target instanceof LivingEntity && !target.isSpectator() && user.canSee(target));
+                    if (user.isSneaking()) {
+                        user.addExhaustion(2);
+                        for (int i = 0; i < (32); i++) {
+                            FireballEntity fireball = new FireballEntity(world, user, user.getRotationVector().x, user.getRotationVector().y, user.getRotationVector().z, 10);
+                            fireball.setOwner(user);
+                            fireball.updatePosition(user.getX() + 1, user.getEyeY() + user.getRandom().nextGaussian(), user.getZ() + user.getRandom().nextGaussian());
+                            world.spawnEntity(fireball);
+                        }
+                        if (user.getHungerManager().getFoodLevel() < 8) {
+                            user.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 10));
+                            user.disableShield(false);
+                            user.setHealth(1);
+                        }
+                        }
+
+                        if (hit != null) {
+
+                            if (!(((Talent) user).getTelas() > 1)) {
+                                user.addExhaustion(1);
+                            }
+                        }
+                        if (hit == null) {
+                            hitResult.getPos();
+                            BlazeEntity cursedshit = new BlazeEntity(EntityType.BLAZE, world);
+                            cursedshit.setPos((float) hitResult.getPos().x, (float) hitResult.getPos().y, (float) hitResult.getPos().z);
+                            world.spawnEntity(cursedshit);
+                            BlockPos blockPos = cursedshit.getBlockPos();
+                            cursedshit.remove(Entity.RemovalReason.DISCARDED);
+                            BlockState blockState = world.getBlockState(blockPos);
+                            if (!(((Talent) user).getTelas() > 1)) {
+                                user.addExhaustion(1);
+                            }
+                        }
+
+
+                }
+            });
+
+        });
+
     }
     }
 
