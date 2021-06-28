@@ -125,12 +125,12 @@ public class MalazanSpells {
                     EntityHitResult hit = MalazanUtil.hitscanEntity(world, user, 30, (target) -> target instanceof LivingEntity && !target.isSpectator() && user.canSee(target));
                     if (user.isSneaking()) {
                         user.addExhaustion(2);
-                        for (int i = 0; i < (4); i++) {
+                        
                             FireballEntity fireball = new FireballEntity(world, user, user.getRotationVector().x + user.getRandom().nextGaussian() / 20, user.getRotationVector().y + user.getRandom().nextGaussian() / 20, user.getRotationVector().z + user.getRandom().nextGaussian() / 20, 4);
                             fireball.setOwner(user);
-                            fireball.setPos(fireball.getX(), fireball.getY() + 1, fireball.getZ());
+                            fireball.setPos(fireball.getX(), fireball.getY(), fireball.getZ());
                             world.spawnEntity(fireball);
-                        }
+                        
                         if (user.getHungerManager().getFoodLevel() < 8) {
                             user.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 10));
                             user.disableShield(false);
