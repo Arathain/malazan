@@ -1,5 +1,6 @@
 package net.arathain.malazan.common.item;
 
+import net.arathain.malazan.Malazan;
 import net.arathain.malazan.common.util.interfaces.Talent;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.ItemEntity;
@@ -15,6 +16,8 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+
+import java.util.Objects;
 
 
 public class TelasTablet extends Item {
@@ -32,7 +35,7 @@ public class TelasTablet extends Item {
                     return TypedActionResult.success(user.getStackInHand(hand));
 
             }
-            if ((world.getBlockState(user.getBlockPos()) == Blocks.FIRE.getDefaultState() || world.getBlockState(user.getBlockPos()) == Blocks.CAMPFIRE.getDefaultState()) && (world.getBlockState(user.getBlockPos().offset(Direction.DOWN)) == Blocks.NETHERITE_BLOCK.getDefaultState() || world.getBlockState(user.getBlockPos().offset(Direction.DOWN)) == Blocks.ANCIENT_DEBRIS.getDefaultState()) && user.isOnFire() && user.getArmor() < 4 && ((Talent) user).getTelas() == 1 && user.getOffHandStack().getItem() == Items.BLAZE_ROD) {
+            if ((world.getBlockState(user.getBlockPos()) == Blocks.FIRE.getDefaultState() || world.getBlockState(user.getBlockPos()) == Blocks.CAMPFIRE.getDefaultState()) && (world.getBlockState(user.getBlockPos().offset(Direction.DOWN)) == Blocks.NETHERITE_BLOCK.getDefaultState() || world.getBlockState(user.getBlockPos().offset(Direction.DOWN)) == Blocks.ANCIENT_DEBRIS.getDefaultState()) && user.isOnFire() && user.getArmor() < 4 && ((Talent) user).getTelas() == 1 && user.getOffHandStack().getItem() == Items.BLAZE_ROD && world == Objects.requireNonNull(user.getEntityWorld().getServer()).getWorld(Malazan.TELAS_WORLD_KEY)) {
 
 
                 this.getDefaultStack().decrement(1);
@@ -51,7 +54,7 @@ public class TelasTablet extends Item {
     public void onItemEntityDestroyed(ItemEntity entity) {
         super.onItemEntityDestroyed(entity);
         if (entity.wasOnFire) {
-            entity.getEntityWorld().createExplosion(entity, entity.getX(), entity.getY(), entity.getZ(), 3.0f, true, Explosion.DestructionType.NONE);
+            entity.getEntityWorld().createExplosion(entity, entity.getX(), entity.getY(), entity.getZ(), 5.0f, true, Explosion.DestructionType.NONE);
         }
 
     }

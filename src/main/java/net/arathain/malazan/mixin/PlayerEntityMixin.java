@@ -5,16 +5,20 @@ import net.arathain.malazan.Malazan;
 import net.arathain.malazan.MalazanClient;
 import net.arathain.malazan.common.util.MalazanUtil;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
 import java.util.Objects;
 
 @Mixin(PlayerEntity.class)
@@ -42,6 +46,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     ClientSidePacketRegistry.INSTANCE.sendToServer(Malazan.TELAS_KEYBIND_DOS, passedData);
                 }
             }
+
+        } else {
             if (this.getEntityWorld().getServer() != null && this.getEntityWorld() == this.getEntityWorld().getServer().getWorld(Malazan.TELAS_WORLD_KEY)) {
                 this.setOnFireFor(1);
             }
