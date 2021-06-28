@@ -58,7 +58,7 @@ public class PortalEntity extends HostileEntity {
                     ), (LivingEntity) -> true
             );
             for (LivingEntity nearbyEntity : entities) {
-                if (!(nearbyEntity instanceof FlareEntity)) {
+                if (!(nearbyEntity instanceof PortalEntity)) {
                     if (nearbyEntity.getEntityWorld() == Objects.requireNonNull(world.getServer()).getWorld(Malazan.TELAS_WORLD_KEY)) {
                         MalazanUtil.exitDim(nearbyEntity, Objects.requireNonNull(world.getServer().getOverworld()));
                     } else {
