@@ -1,10 +1,12 @@
 package net.arathain.malazan.common.casting;
 
+import io.netty.buffer.Unpooled;
 import net.arathain.malazan.Malazan;
 import net.arathain.malazan.common.entity.PortalEntity;
 import net.arathain.malazan.common.util.MalazanUtil;
 import net.arathain.malazan.common.util.interfaces.Talent;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
@@ -19,6 +21,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -37,6 +40,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class MalazanSpells {
     public static void init() {
@@ -126,15 +130,19 @@ public class MalazanSpells {
                     if (user.isSneaking()) {
                         user.addExhaustion(2);
                         
-                            FireballEntity fireball = new FireballEntity(world, user, user.getRotationVector().x + user.getRandom().nextGaussian() / 20, user.getRotationVector().y + user.getRandom().nextGaussian() / 20, user.getRotationVector().z + user.getRandom().nextGaussian() / 20, 4);
+                            FireballEntity fireball = new FireballEntity(world, user, user.getRotationVector().x + user.getRandom().nextGaussian() / 16, user.getRotationVector().y + user.getRandom().nextGaussian() / 16, user.getRotationVector().z + user.getRandom().nextGaussian() / 16, 4);
                             fireball.setOwner(user);
-                            fireball.setPos(fireball.getX(), fireball.getY(), fireball.getZ());
+                        if (hit != null) {
+                            fireball.setPos(hit.getPos().x + user.getRandom().nextGaussian(), hit.getPos().y + user.getRandom().nextGaussian() / 8, hit.getPos().z + user.getRandom().nextGaussian());
+                        } else {
+                            fireball.setPos(hitResult.getPos().x + user.getRandom().nextGaussian(), hitResult.getPos().y + user.getRandom().nextGaussian() / 8, hitResult.getPos().z + user.getRandom().nextGaussian());
+                        }
                             world.spawnEntity(fireball);
                         
                         if (user.getHungerManager().getFoodLevel() < 8) {
                             user.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 10));
                             user.disableShield(false);
-                            user.setHealth(1);
+                            user.setHealth(4);
                         }
                         }
                     if (hit != null) {
@@ -157,33 +165,14 @@ public class MalazanSpells {
                             List<PersistentProjectileEntity> arrows = user.getEntityWorld().getEntitiesByClass(
                                     PersistentProjectileEntity.class,
                                     new Box(
-                                            burnmpos.getX() - 20, burnmpos.getY() - 20, burnmpos.getZ() - 20,
-                                            burnmpos.getX() + 20, burnmpos.getY() + 20, burnmpos.getZ() + 20
+                                            burnmpos.getX() - 5, burnmpos.getY() - 5, burnmpos.getZ() - 5,
+                                            burnmpos.getX() + 5, burnmpos.getY() + 5, burnmpos.getZ() + 5
                                     ), (PersistentProjectileEntity) -> true
                             );
 
                             for (PersistentProjectileEntity nearbyArrow : arrows) {
 
                                 nearbyArrow.remove(Entity.RemovalReason.KILLED);
-                            }
-                        }
-                        if (world.isClient()) {
-                            List<PersistentProjectileEntity> arrows = user.getEntityWorld().getEntitiesByClass(
-                                    PersistentProjectileEntity.class,
-                                    new Box(
-                                            burnmpos.getX() - 20, burnmpos.getY() - 20, burnmpos.getZ() - 20,
-                                            burnmpos.getX() + 20, burnmpos.getY() + 20, burnmpos.getZ() + 20
-                                    ), (PersistentProjectileEntity) -> true
-                            );
-
-                            for (PersistentProjectileEntity nearbyArrow : arrows) {
-                                for (int i = 0; i < (32); i++) {
-                                    nearbyArrow.getEntityWorld().addParticle(ParticleTypes.FLAME,
-                                            nearbyArrow.getX(),
-                                            nearbyArrow.getY(),
-                                            nearbyArrow.getZ(),
-                                            nearbyArrow.getVelocity().x, nearbyArrow.getVelocity().y, nearbyArrow.getVelocity().z);
-                                }
                             }
                         }
                         if (!(((Talent) user).getTelas() > 1)) {
@@ -220,29 +209,22 @@ public class MalazanSpells {
                                 nearbyArrow.remove(Entity.RemovalReason.KILLED);
                             }
                         }
-                        if (world.isClient()) {
-                            List<PersistentProjectileEntity> arrows = user.getEntityWorld().getEntitiesByClass(
-                                    PersistentProjectileEntity.class,
-                                    new Box(
-                                            pos.getX() - 5, pos.getY() - 5, burnmpos.getZ() - 5,
-                                            pos.getX() + 5, pos.getY() + 5, pos.getZ() + 5
-                                    ), (PersistentProjectileEntity) -> true
-                            );
-
-                            for (PersistentProjectileEntity nearbyArrow : arrows) {
-                                for (int i = 0; i < (32); i++) {
-                                    nearbyArrow.getEntityWorld().addParticle(ParticleTypes.FLAME,
-                                            nearbyArrow.getX(),
-                                            nearbyArrow.getY(),
-                                            nearbyArrow.getZ(),
-                                            nearbyArrow.getVelocity().x, nearbyArrow.getVelocity().y, nearbyArrow.getVelocity().z);
-                                }
-                            }
-                        }
                         if (!(((Talent) user).getTelas() > 1)) {
                             user.addExhaustion(1);
                         }
                     }
+                    user.setOnFireFor(2);
+                    Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world,pos);
+                    // Look at the other methods of `PlayerStream` to capture different groups of players.
+
+                    // We'll get to this later
+                    PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+                    passedData.writeBlockPos(pos);
+
+                    // Then we'll send the packet to all the players
+                    watchingPlayers.forEach(player ->
+                            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player,Malazan.TELAS_PARTICLE_ID,passedData));
+
 
 
 

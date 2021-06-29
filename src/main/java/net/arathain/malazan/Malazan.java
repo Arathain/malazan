@@ -28,6 +28,7 @@ public class Malazan implements ModInitializer {
 	public static final EntityType<PortalEntity> PORTAL = createEntity("portal", FlareEntity.createAttributes(), FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, PortalEntity::new).dimensions(EntityDimensions.fixed(0.6f, 1.9f)).fireImmune().build());
 	public static final Identifier TELAS_DIMENSION_ID = new Identifier(MOD_ID, "telas");
 	public static final RegistryKey<World> TELAS_WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, TELAS_DIMENSION_ID);
+	public static final Identifier TELAS_PARTICLE_ID = new Identifier(MOD_ID, "telasprtcl");
 
 	@Override
 	public void onInitialize() {
