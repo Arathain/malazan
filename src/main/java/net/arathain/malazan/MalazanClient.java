@@ -18,6 +18,7 @@ import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class MalazanClient implements ClientModInitializer {
 
@@ -32,18 +33,16 @@ public class MalazanClient implements ClientModInitializer {
                         FlareRenderer::new);
                 EntityRendererRegistry.INSTANCE.register(Malazan.PORTAL,
                         PortalRenderer::new);
-                ClientSidePacketRegistry.INSTANCE.register(Malazan.TELAS_PARTICLE_ID,
-                        (packetContext, attachedData) -> {
-                                float targetX = Objects.requireNonNull(attachedData.readNbt()).getFloat("X");
-                                float targetY = Objects.requireNonNull(attachedData.readNbt()).getFloat("Y");
-                                float targetZ = Objects.requireNonNull(attachedData.readNbt()).getFloat("Z");
-                                packetContext.getTaskQueue().execute(() -> {
-                                MinecraftClient.getInstance().particleManager.addParticle(
-                                        ParticleTypes.FLAME, targetX + packetContext.getPlayer().getRandom().nextGaussian() / 8, targetY + 1 + packetContext.getPlayer().getRandom().nextGaussian() / 8, targetZ + packetContext.getPlayer().getRandom().nextGaussian() / 8,
-                                        0.0D + packetContext.getPlayer().getRandom().nextGaussian() / 64, 0.1D + packetContext.getPlayer().getRandom().nextGaussian() / 16, 0.0D + packetContext.getPlayer().getRandom().nextGaussian() / 64
-                                );
-                        });
-        });
+            ClientSidePacketRegistry.INSTANCE.register(Malazan.TELAS_PARTICLE_ID,
+                    (packetContext, attachedData) -> packetContext.getTaskQueue().execute(() -> {
+                        // For now we will use the player's position since we don't know (yet) how to use the BlockPos
+                        // in the onBlockRemoved callback. This is explained in "passing information to packets".
+                        Vec3d pos = packetContext.getPlayer().getPos();
+                        MinecraftClient.getInstance().particleManager.addParticle(
+                                ParticleTypes.FLAME, pos.getX() + packetContext.getPlayer().getRandom().nextGaussian() / 10, pos.getY() + packetContext.getPlayer().getRandom().nextGaussian() / 10, pos.getZ() + packetContext.getPlayer().getRandom().nextGaussian() / 10,
+                                0.0D, 0.1D, 0.0D
+                        );
+                    }));
         }
 
         private void initKeybinds() {

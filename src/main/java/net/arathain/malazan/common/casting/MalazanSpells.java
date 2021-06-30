@@ -7,6 +7,9 @@ import net.arathain.malazan.common.entity.PortalEntity;
 import net.arathain.malazan.common.util.MalazanUtil;
 import net.arathain.malazan.common.util.interfaces.Talent;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
@@ -42,6 +45,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class MalazanSpells {
@@ -217,17 +221,12 @@ public class MalazanSpells {
                     }
                     user.setOnFireFor(2);
                     Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world,pos);
+                    // Look at the other methods of `PlayerStream` to capture different groups of players.
 
+                    // We'll get to this later
                     PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-                    float x = (float) user.getPos().getX();
-                    float y = (float) user.getPos().getY();
-                    float z = (float) user.getPos().getZ();
-                    NbtCompound targetPos = new NbtCompound();
-                    targetPos.putFloat("X", x);
-                    targetPos.putFloat("Y", y);
-                    targetPos.putFloat("Z", z);
-                    passedData.writeNbt(targetPos);
 
+                    // Then we'll send the packet to all the players
                     watchingPlayers.forEach(player ->
                             ServerSidePacketRegistry.INSTANCE.sendToPlayer(player,Malazan.TELAS_PARTICLE_ID,passedData));
 
