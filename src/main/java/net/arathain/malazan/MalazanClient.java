@@ -10,10 +10,14 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Objects;
 
 public class MalazanClient implements ClientModInitializer {
 
@@ -30,11 +34,12 @@ public class MalazanClient implements ClientModInitializer {
                         PortalRenderer::new);
                 ClientSidePacketRegistry.INSTANCE.register(Malazan.TELAS_PARTICLE_ID,
                         (packetContext, attachedData) -> {
-                                // Get the BlockPos we put earlier, in the networking thread
-                                BlockPos pos = attachedData.readBlockPos();
+                                float targetX = Objects.requireNonNull(attachedData.readNbt()).getFloat("X");
+                                float targetY = Objects.requireNonNull(attachedData.readNbt()).getFloat("Y");
+                                float targetZ = Objects.requireNonNull(attachedData.readNbt()).getFloat("Z");
                                 packetContext.getTaskQueue().execute(() -> {
                                 MinecraftClient.getInstance().particleManager.addParticle(
-                                        ParticleTypes.FLAME, pos.getX() + packetContext.getPlayer().getRandom().nextGaussian() / 8, pos.getY() + 1 + packetContext.getPlayer().getRandom().nextGaussian() / 8, pos.getZ() + packetContext.getPlayer().getRandom().nextGaussian() / 8,
+                                        ParticleTypes.FLAME, targetX + packetContext.getPlayer().getRandom().nextGaussian() / 8, targetY + 1 + packetContext.getPlayer().getRandom().nextGaussian() / 8, targetZ + packetContext.getPlayer().getRandom().nextGaussian() / 8,
                                         0.0D + packetContext.getPlayer().getRandom().nextGaussian() / 64, 0.1D + packetContext.getPlayer().getRandom().nextGaussian() / 16, 0.0D + packetContext.getPlayer().getRandom().nextGaussian() / 64
                                 );
                         });

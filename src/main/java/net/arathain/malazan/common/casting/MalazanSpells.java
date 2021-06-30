@@ -1,6 +1,7 @@
 package net.arathain.malazan.common.casting;
 
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.arathain.malazan.Malazan;
 import net.arathain.malazan.common.entity.PortalEntity;
 import net.arathain.malazan.common.util.MalazanUtil;
@@ -21,6 +22,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -215,13 +217,17 @@ public class MalazanSpells {
                     }
                     user.setOnFireFor(2);
                     Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world,pos);
-                    // Look at the other methods of `PlayerStream` to capture different groups of players.
 
-                    // We'll get to this later
                     PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-                    passedData.writeBlockPos(pos);
+                    float x = (float) user.getPos().getX();
+                    float y = (float) user.getPos().getY();
+                    float z = (float) user.getPos().getZ();
+                    NbtCompound targetPos = new NbtCompound();
+                    targetPos.putFloat("X", x);
+                    targetPos.putFloat("Y", y);
+                    targetPos.putFloat("Z", z);
+                    passedData.writeNbt(targetPos);
 
-                    // Then we'll send the packet to all the players
                     watchingPlayers.forEach(player ->
                             ServerSidePacketRegistry.INSTANCE.sendToPlayer(player,Malazan.TELAS_PARTICLE_ID,passedData));
 
