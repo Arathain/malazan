@@ -42,6 +42,13 @@ public class TelasTablet extends Item {
                 ((Talent) user).setTelas(2);
                 user.clearStatusEffects();
             }
+            if ((world.getBlockState(user.getBlockPos()) == Blocks.FIRE.getDefaultState() || world.getBlockState(user.getBlockPos()) == Blocks.CAMPFIRE.getDefaultState()) && (world.getBlockState(user.getBlockPos().offset(Direction.DOWN)) == Blocks.NETHERITE_BLOCK.getDefaultState() || world.getBlockState(user.getBlockPos().offset(Direction.DOWN)) == Blocks.ANCIENT_DEBRIS.getDefaultState()) && ((world.getBlockState(user.getBlockPos().offset(Direction.DOWN).offset(Direction.NORTH)) == Blocks.LANTERN.getDefaultState())) && ((world.getBlockState(user.getBlockPos().offset(Direction.DOWN).offset(Direction.WEST)) == Blocks.LANTERN.getDefaultState())) && ((world.getBlockState(user.getBlockPos().offset(Direction.DOWN).offset(Direction.SOUTH)) == Blocks.LANTERN.getDefaultState())) && ((world.getBlockState(user.getBlockPos().offset(Direction.DOWN).offset(Direction.EAST)) == Blocks.LANTERN.getDefaultState())) && user.isOnFire() && user.getArmor() < 4 && ((Talent) user).getTelas() == 2 && user.getOffHandStack().getItem() == Items.BLAZE_ROD && world == Objects.requireNonNull(user.getEntityWorld().getServer()).getWorld(Malazan.TELAS_WORLD_KEY)) {
+
+
+                this.getDefaultStack().decrement(1);
+                ((Talent) user).setTelas(3);
+                user.clearStatusEffects();
+            }
             return TypedActionResult.success(user.getStackInHand(hand));
 
         } else {
@@ -55,6 +62,16 @@ public class TelasTablet extends Item {
         super.onItemEntityDestroyed(entity);
         if (entity.wasOnFire) {
             entity.getEntityWorld().createExplosion(entity, entity.getX(), entity.getY(), entity.getZ(), 5.0f, true, Explosion.DestructionType.NONE);
+            PlayerEntity user = entity.getEntityWorld().getClosestPlayer(entity, 5);
+            World world = entity.getEntityWorld();
+            assert user != null;
+            if ((world.getBlockState(user.getBlockPos()) == Blocks.FIRE.getDefaultState() || world.getBlockState(user.getBlockPos()) == Blocks.CAMPFIRE.getDefaultState()) && (world.getBlockState(user.getBlockPos().offset(Direction.DOWN)) == Blocks.NETHERITE_BLOCK.getDefaultState() || world.getBlockState(user.getBlockPos().offset(Direction.DOWN)) == Blocks.ANCIENT_DEBRIS.getDefaultState()) && ((world.getBlockState(user.getBlockPos().offset(Direction.DOWN).offset(Direction.NORTH)) == Blocks.LANTERN.getDefaultState())) && ((world.getBlockState(user.getBlockPos().offset(Direction.DOWN).offset(Direction.WEST)) == Blocks.LANTERN.getDefaultState())) && ((world.getBlockState(user.getBlockPos().offset(Direction.DOWN).offset(Direction.SOUTH)) == Blocks.LANTERN.getDefaultState())) && ((world.getBlockState(user.getBlockPos().offset(Direction.DOWN).offset(Direction.EAST)) == Blocks.LANTERN.getDefaultState())) && user.isOnFire() && user.getArmor() < 4 && ((Talent) user).getTelas() == 1 && user.getOffHandStack().getItem() == Items.BLAZE_ROD && world == Objects.requireNonNull(user.getEntityWorld().getServer()).getWorld(Malazan.TELAS_WORLD_KEY)) {
+
+
+                this.getDefaultStack().decrement(1);
+                ((Talent) user).setTelas(3);
+                user.clearStatusEffects();
+            }
         }
 
     }

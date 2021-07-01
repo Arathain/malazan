@@ -3,25 +3,19 @@ package net.arathain.malazan.mixin;
 import io.netty.buffer.Unpooled;
 import net.arathain.malazan.Malazan;
 import net.arathain.malazan.MalazanClient;
-import net.arathain.malazan.common.util.MalazanUtil;
 import net.arathain.malazan.common.util.interfaces.Talent;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.List;
-import java.util.Objects;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity {
@@ -55,6 +49,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             if (this.getEntityWorld().getServer() != null && this.getEntityWorld() == this.getEntityWorld().getServer().getWorld(Malazan.TELAS_WORLD_KEY)) {
                 this.setOnFireFor(1);
             }
+        }
+    }
+    @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;isInvulnerableTo(Lnet/minecraft/entity/damage/DamageSource;)Z", at = @At("RETURN"), cancellable = true)
+    public void isInvulnerableTo(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
+        if (damageSource.isFire() && ((Talent) this).getTelas() > 2) {
+            cir.setReturnValue(true);
         }
     }
 }
