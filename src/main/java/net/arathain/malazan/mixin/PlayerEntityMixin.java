@@ -27,24 +27,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     public void tick(CallbackInfo ci) {
 
         if (world.isClient()) {
-            if(MalazanClient.spellbind1.isPressed()){
-                PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-                passedData.writeBlockPos(this.getBlockPos());
-
-                if (this.random.nextBoolean()) {
-                    ClientSidePacketRegistry.INSTANCE.sendToServer(Malazan.TELAS_KEYBIND_UNO, passedData);
-                }
-            }
-            if(MalazanClient.spellbind2.isPressed()){
-                PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-                passedData.writeBlockPos(this.getBlockPos());
-
-                if (this.random.nextBoolean()) {
-                    ClientSidePacketRegistry.INSTANCE.sendToServer(Malazan.TELAS_KEYBIND_DOS, passedData);
-                }
-            }
-
-
+            MalazanClient.tickPlayer((PlayerEntity) (Object) this, this.random);
         } else {
             if (this.getEntityWorld().getServer() != null && this.getEntityWorld() == this.getEntityWorld().getServer().getWorld(Malazan.TELAS_WORLD_KEY)) {
                 this.setOnFireFor(1);
