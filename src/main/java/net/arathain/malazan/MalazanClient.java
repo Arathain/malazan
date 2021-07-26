@@ -1,24 +1,23 @@
 package net.arathain.malazan;
 
-import net.arathain.malazan.common.render.FlareRenderer;
-import net.arathain.malazan.common.render.PortalRenderer;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import org.lwjgl.glfw.GLFW;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 
-import java.util.Objects;
 import java.util.Random;
+
+import io.netty.buffer.Unpooled;
+import net.arathain.malazan.common.render.FlareRenderer;
+import net.arathain.malazan.common.render.PortalRenderer;
+import org.lwjgl.glfw.GLFW;
 
 public class MalazanClient implements ClientModInitializer {
 
@@ -65,5 +64,24 @@ public class MalazanClient implements ClientModInitializer {
                         GLFW.GLFW_KEY_X, // The keycode of the key
                         "category.malazan.spells" // The translation key of the keybinding's category.
                 ));
+        }
+
+        public static void tickPlayer(PlayerEntity player, Random random) {
+            if (spellbind1.isPressed()) {
+                PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+                passedData.writeBlockPos(player.getBlockPos());
+
+                if (random.nextBoolean()) {
+                    ClientSidePacketRegistry.INSTANCE.sendToServer(Malazan.TELAS_KEYBIND_UNO, passedData);
+                }
+            }
+            if (spellbind2.isPressed()) {
+                PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+                passedData.writeBlockPos(player.getBlockPos());
+
+                if (random.nextBoolean()) {
+                    ClientSidePacketRegistry.INSTANCE.sendToServer(Malazan.TELAS_KEYBIND_DOS, passedData);
+                }
+            }
         }
 }
